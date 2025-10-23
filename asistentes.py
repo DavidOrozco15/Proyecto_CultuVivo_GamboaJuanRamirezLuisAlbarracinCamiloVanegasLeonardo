@@ -10,3 +10,8 @@ def cargar_asistentes():
             return json.load(f)
     else:
         return []
+    
+
+def guardar_asistentes(asistentes):
+    with open(ARCHIVO_JSON, "w", encoding="utf-8") as f:
+        json.dump(asistentes, f, indent=4, ensure_ascii=False)    
