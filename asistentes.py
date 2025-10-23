@@ -14,4 +14,8 @@ def cargar_asistentes():
 
 def guardar_asistentes(asistentes):
     with open(ARCHIVO_JSON, "w", encoding="utf-8") as f:
-        json.dump(asistentes, f, indent=4, ensure_ascii=False)    
+        json.dump(asistentes, f, indent=4, ensure_ascii=False) 
+
+def validar_correo(correo):
+    patron = r'^[\w\.-]+@[\w\.-]+\.\w+$'
+    return re.match(patron, correo) is not None
