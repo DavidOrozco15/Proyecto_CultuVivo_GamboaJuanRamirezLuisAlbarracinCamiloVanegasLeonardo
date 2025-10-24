@@ -1,0 +1,12 @@
+[
+    {
+        "id": 1,
+        "nombre": "Tomorrowland",
+        "fecha": "2025-08-21",
+        "hora": "12:00",
+        "lugar": "Movistar Arena",
+        "categoria": "Concierto",
+        "capacidad": "200",
+        "artista": "Diplo"
+    }
+]

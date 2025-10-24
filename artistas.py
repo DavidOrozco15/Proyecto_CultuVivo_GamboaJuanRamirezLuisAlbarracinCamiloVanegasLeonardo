@@ -3,7 +3,7 @@ import re
 import os
 
 
-archivoJson = "artistas.json"
+archivoJson = "data/artistas.json"
 
 def lista_artista(nombre_a=archivoJson):
     if not os.path.exists(nombre_a):
