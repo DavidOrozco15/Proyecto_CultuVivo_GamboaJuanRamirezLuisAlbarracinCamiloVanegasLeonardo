@@ -20,6 +20,7 @@ if __name__ == "__main__":
             print("Opción inválida. Intente nuevamente.")
 
 from administracion import crear_evento, modificar_evento, eliminar_evento, listar_eventos
+from artistas import registrar_artista
 
 def menu_admin():
     while True:
@@ -28,7 +29,8 @@ def menu_admin():
         print("2. Modificar evento")
         print("3. Eliminar evento")
         print("4. Ver eventos")
-        print("5. Salir")
+        print("5. Registrar artistas ")
+        print("6. Salir")
 
         opcion = input("Seleccione una opción: ")
 
@@ -41,6 +43,8 @@ def menu_admin():
         elif opcion == "4":
             listar_eventos()
         elif opcion == "5":
+            registrar_artista()
+        elif opcion == "6":
             print("👋 Saliendo del panel de administrador...")
             break
         else:
