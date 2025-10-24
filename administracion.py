@@ -165,4 +165,38 @@ def eliminar_evento():
     guardar_eventos(nuevos)
     print("🗑️ Evento eliminado correctamente.")
 
+def generar_reporte():
+    eventos =cargar_eventos()
+
+    if not eventos :
+        print ("no hay eventos para generar reportes.")
+        return
+    
+    print ("\n"+ " REPORTE DE EVENTOS ".center(50,"="))
+
+    total_eventos = len (eventos)
+    print(f" total de eventos registrados: {total_eventos}")
+
+    categorias= {}
+    for e in eventos :
+        cat = e ["categoria"]
+        categorias[cat] = categorias.get(cat,0)+1
+
+    print("\n eventos por categoria:")
+    for cat, cant in categorias.items():
+        print(f" - {cat}: {cant} evento(s)")
+
+    eventos_con_artista = [ e for e in eventos if e ["artista"]]
+    print(f"\n eventos con artista asignado: {len(eventos_con_artista)}")
+
+    try:
+        capacidad_total = sum(int(e["capacidad"])for e in eventos)
+
+    except:
+        capacidad_total = "error en datos de capacidad"
+
+    print (f"\n capacidad total disponible: {capacidad_total}")
+    print ("\n Reporte echo correctamente")
+
+    
 
