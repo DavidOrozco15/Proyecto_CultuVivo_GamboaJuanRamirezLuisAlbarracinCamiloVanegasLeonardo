@@ -2,8 +2,9 @@
 import json
 import os
 from modules.utils import validar_evento, validar_existencia
+from artistas import registrar_artista
 
-RUTA_JSON = os.path.join(os.path.dirname(__file__), "eventos.json")
+RUTA_JSON = os.path.join(os.path.dirname(__file__), "data/eventos.json")
 
 def cargar_eventos():
     if not os.path.exists(RUTA_JSON):
@@ -19,7 +20,7 @@ def guardar_eventos(eventos):
         json.dump(eventos, f, indent=4, ensure_ascii=False)
 
 def cargar_artistas():
-    ruta_artistas = os.path.join(os.path.dirname(__file__), "artistas.json")
+    ruta_artistas = os.path.join(os.path.dirname(__file__), "data/artistas.json")
     if not os.path.exists(ruta_artistas):
         print("⚠️ No existe artistas.json. No se podrán asignar artistas.")
         return {}
@@ -163,3 +164,5 @@ def eliminar_evento():
 
     guardar_eventos(nuevos)
     print("🗑️ Evento eliminado correctamente.")
+
+

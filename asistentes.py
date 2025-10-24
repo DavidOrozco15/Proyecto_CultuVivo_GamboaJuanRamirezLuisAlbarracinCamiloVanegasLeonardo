@@ -3,7 +3,7 @@ import re
 import os
 from modules.utils import validar_correo
 
-ARCHIVO_JSON = "asistentes.json"
+ARCHIVO_JSON = "data/asistentes.json"
 
 def cargar_asistentes(nombre_a=ARCHIVO_JSON):
     if not os.path.exists(nombre_a):
