@@ -1,6 +1,7 @@
 import json
 import re
 import os
+from modules.utils import validar_correo
 
 ARCHIVO_JSON = "asistentes.json"
 
@@ -17,10 +18,6 @@ def guardar_asistentes(data, nombre_a=ARCHIVO_JSON):
     with open(nombre_a, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=4, ensure_ascii=False)
 
-def validar_correo(correo):
-    patron = r'^[\w\.-]+@[\w\.-]+\.\w+$'
-    return re.match(patron, correo) is not None
-
 def registrar_asistente():
     asistentes = cargar_asistentes()
 
@@ -28,15 +25,18 @@ def registrar_asistente():
 
     identificacion = input("ingrese su numero de identifeicacion: ").strip()
     nombre = input("Ingrese su nombre completo: ").strip()
-    correo = input("Ingrese su correo electronico: ").strip()
+    
+    
+    while True:
+        correo = input("Ingrese su correo electronico: ").strip()
+        if validar_correo(correo):
+            break
+        print("ERROR: El correo electrónico no es válido. Por favor, inténtelo de nuevo.")
+    
     tipo_boleto = input("Ingrese el tipo de boleto (general/VIP/Cortesia): ").strip().capitalize()
 
-    if not identificacion or not nombre or not correo or not tipo_boleto:
+    if not identificacion or not nombre or not tipo_boleto:
         print("ERROR: Todos los campos son obligatorios.")
-        return
-
-    if not validar_correo(correo):
-        print("ERROR: El correo electronico no es valido.")
         return
 
     if identificacion in asistentes:
