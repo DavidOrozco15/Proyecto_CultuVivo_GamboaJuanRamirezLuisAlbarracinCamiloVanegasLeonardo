@@ -4,7 +4,9 @@ import os
 from artistas import registrar_artista
 from modules.utils import (
     pedir_texto, pedir_fecha, pedir_hora, pedir_capacidad,
-    validar_evento, validar_existencia, clear_screen, pause
+    validar_evento, validar_existencia, pedir_categoria_n, pedir_nombre_n,
+    pedir_fecha_n, pedir_hora_n, pedir_capacidad_n,
+    clear_screen, pause
 )
 
 RUTA_JSON = os.path.join(os.path.dirname(__file__), "data/eventos.json")
@@ -102,63 +104,40 @@ def modificar_evento():
     listar_eventos()
 
     try:
-        id_evento = int(input("\nIngrese el ID a modificar: "))
+        id_evento = int(input("\nIngrese el ID del evento a modificar: "))
     except ValueError:
         print("❌ ID inválido.")
         return
-
+    
     eventos = cargar_eventos()
     evento = next((e for e in eventos if e["id"] == id_evento), None)
-
     if not evento:
-        print("❌ No existe un evento con ese ID.")
+        print("❌ No se encontró el evento.")
         return
 
-    print("Deje vacío para mantener el valor actual.\n")
+    print("\n✏️ Edición del evento (deje vacío para mantener el anterior):\n")
 
-    nuevo_nombre = input(f"Nuevo nombre ({evento['nombre']}): ").strip()
-    if nuevo_nombre:
-        evento['nombre'] = nuevo_nombre
+    evento["nombre"] = pedir_nombre_n(evento["nombre"])
+    evento["fecha"] = pedir_fecha_n(evento["fecha"])
+    evento["hora"] = pedir_hora_n(evento["hora"])
+    evento["lugar"] = input(f"Nuevo lugar ({evento['lugar']}): ").strip() or evento["lugar"]
+    evento["categoria"] = pedir_categoria_n(evento["categoria"])
+    evento["capacidad"] = pedir_capacidad_n(evento["capacidad"])
 
-    nueva_fecha = input(f"Nueva fecha ({evento['fecha']}): ").strip()
-    if nueva_fecha:
-        evento['fecha'] = pedir_fecha("❌ Error, Confirme nueva fecha (YYYY-MM-DD): ")
-
-    nueva_hora = input(f"Nueva hora ({evento['hora']}): ").strip()
-    if nueva_hora:
-        evento['hora'] = pedir_hora("❌ Error, Confirme nueva hora (HH:MM): ")
-
-    nuevo_lugar = input(f"Nuevo lugar ({evento['lugar']}): ").strip()
-    if nuevo_lugar:
-        evento['lugar'] = nuevo_lugar
-
-    nueva_categoria = input(f"Nueva categoría ({evento['categoria']}): ").strip()
-    if nueva_categoria:
-        evento['categoria'] = nueva_categoria
-
-    nueva_capacidad = input(f"Nueva capacidad ({evento['capacidad']}): ").strip()
-    if nueva_capacidad:
-        evento['capacidad'] = pedir_capacidad("❌ Error, Confirme nueva capacidad: ")
-
-    # Validación del artista
     artistas = cargar_artistas()
     if artistas:
         print("\nArtistas disponibles:")
         for id_art, a in artistas.items():
-            print(f"{id_art}. {a['nombre']}")
-
-        nuevo_artista = input(f"Nuevo artista (ID) [{evento['artista']}]: ").strip()
-        if nuevo_artista and nuevo_artista in artistas:
-            evento['artista'] = artistas[nuevo_artista]["nombre"]
-
-    if not validar_evento(evento):
-        print("❌ El evento no pudo actualizarse por datos inválidos.")
-        return
+            print(f"{id_art}. {a['nombre']} - {a['tipo_presentacion']}")
+        
+        nuevo_art = input(f"Nuevo artista (ID) [{evento['artista']}]: ").strip()
+        if nuevo_art in artistas:
+            evento["artista"] = artistas[nuevo_art]["nombre"]
 
     guardar_eventos(eventos)
-    print("✅ Evento actualizado exitosamente ✅")
-    pause()
+    print("✅ Evento actualizado correctamente ✅")
 
+    
 def eliminar_evento():
     clear_screen()
     listar_eventos()

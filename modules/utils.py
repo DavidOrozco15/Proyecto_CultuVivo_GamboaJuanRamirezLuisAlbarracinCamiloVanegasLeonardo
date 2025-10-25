@@ -131,4 +131,53 @@ def validar_existencia(eventos, nuevo):
             return True
     return False
 
+def pedir_nombre_n(valor_actual=None):
+    while True:
+        nombre = input(f"Nuevo nombre ({valor_actual}): ").strip() if valor_actual else input("Nombre del evento: ").strip()
+        if not nombre and valor_actual:
+            return valor_actual
+        if nombre and nombre.replace(" ", "").isalpha():
+            return nombre
+        print("❌ Nombre inválido. Solo letras.")
+
+def pedir_categoria_n(valor_actual=None):
+    while True:
+        categoria = input(f"Nueva categoría ({valor_actual}): ").strip() if valor_actual else input("Categoría: ").strip()
+        if not categoria and valor_actual:
+            return valor_actual
+        if categoria:
+            return categoria
+        print("❌ Categoría no puede estar vacía.")
+
+def pedir_fecha_n(valor_actual=None):
+    while True:
+        fecha = input(f"Nueva fecha ({valor_actual}): ").strip() if valor_actual else input("Fecha (YYYY-MM-DD): ").strip()
+        if not fecha and valor_actual:
+            return valor_actual
+        try:
+            datetime.strptime(fecha, "%Y-%m-%d")
+            return fecha
+        except ValueError:
+            print("❌ Fecha inválida. Ejemplo: 2025-10-25")
+
+def pedir_hora_n(valor_actual=None):
+    while True:
+        hora = input(f"Nueva hora ({valor_actual}): ").strip() if valor_actual else input("Hora (HH:MM): ").strip()
+        if not hora and valor_actual:
+            return valor_actual
+        try:
+            datetime.strptime(hora, "%H:%M")
+            return hora
+        except ValueError:
+            print("❌ Hora inválida. Ejemplo: 14:30")
+
+def pedir_capacidad_n(valor_actual=None):
+    while True:
+        capacidad = input(f"Nueva capacidad ({valor_actual}): ").strip() if valor_actual else input("Capacidad: ").strip()
+        if not capacidad and valor_actual:
+            return valor_actual
+        if capacidad.isdigit() and int(capacidad) > 0:
+            return int(capacidad)
+        print("❌ Capacidad inválida (solo números positivos).")
+
 # huevo de pascua jejejeje
