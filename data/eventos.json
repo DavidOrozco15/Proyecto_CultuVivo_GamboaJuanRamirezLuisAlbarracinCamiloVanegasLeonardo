@@ -6,7 +6,7 @@
         "hora": "12:00",
         "lugar": "Movistar Arena",
         "categoria": "Concierto",
-        "capacidad": "200",
+        "capacidad": 200,
         "artista": "Diplo"
     },
     {
