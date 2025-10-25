@@ -12,11 +12,11 @@
     {
         "id": 2,
         "nombre": "kaka",
-        "fecha": "2005-06-18",
-        "hora": "3:00",
-        "lugar": "su casa",
+        "fecha": "2026-05-15",
+        "hora": "5:00",
+        "lugar": "casa",
         "categoria": "danza",
-        "capacidad": "300",
+        "capacidad": 400,
         "artista": "corso"
     }
 ]
