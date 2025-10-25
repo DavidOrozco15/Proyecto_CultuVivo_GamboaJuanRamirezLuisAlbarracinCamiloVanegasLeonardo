@@ -14,43 +14,32 @@ def validar_correo(correo):
 from datetime import datetime
 
 def validar_evento(evento):
-    for campo, valor in evento.items():
-        if campo != "id" and not str(valor).strip():
+    """Valida que todos los campos del evento sean válidos y consistentes."""
+    # Validar campos requeridos no vacíos
+    campos_requeridos = ["nombre", "fecha", "hora", "lugar", "categoria", "capacidad"]
+    for campo in campos_requeridos:
+        if not str(evento.get(campo, "")).strip():
             print(f"⚠️ El campo '{campo}' no puede estar vacío.")
             pause()
             return False
 
-    # Validar formato de fecha
+    # Validar formato de fecha y que no sea pasada
     try:
         fecha_dt = datetime.strptime(evento["fecha"], "%Y-%m-%d")
-    except ValueError:
-        print("⚠️ La fecha debe tener el formato YYYY-MM-DD.")
-        pause()
-        return False
-
-    # Validar formato de hora
-    try:
         hora_dt = datetime.strptime(evento["hora"], "%H:%M")
-    except ValueError:
-        print("⚠️ La hora debe tener el formato HH:MM (24h).")
-        pause()
-        return False
-
-    # Validar que la fecha/hora no sea en el pasado
-    fecha_hora_completa = datetime.combine(fecha_dt.date(), hora_dt.time())
-    if fecha_hora_completa < datetime.now():
-        print("⚠️ La fecha y hora del evento no pueden ser en el pasado.")
-        pause()
-        return False
-
-    # Validar capacidad numérica
-    try:
-        if int(evento["capacidad"]) <= 0:
-            print("⚠️ La capacidad debe ser un número positivo.")
+        fecha_hora = datetime.combine(fecha_dt.date(), hora_dt.time())
+        if fecha_hora < datetime.now():
+            print("⚠️ La fecha y hora del evento no pueden ser en el pasado.")
             pause()
             return False
-    except ValueError:
-        print("⚠️ La capacidad debe ser un número entero.")
+    except ValueError as e:
+        print(f"⚠️ Formato de fecha/hora inválido: {str(e)}")
+        pause()
+        return False
+
+    # Validar capacidad (debe ser int en el evento)
+    if not isinstance(evento["capacidad"], int) or evento["capacidad"] <= 0:
+        print("⚠️ La capacidad debe ser un número entero positivo.")
         pause()
         return False
 
@@ -73,13 +62,21 @@ def validar_disponibilidad_artista(artistas, id_artista, fecha, hora):
             return False
     return True
 
-# mejora pedida por el scrum master
-def pedir_texto(mensaje):
+# Funciones de validación y entrada mejoradas
+def validar_texto_no_vacio(texto):
+    """Valida que un texto no esté vacío después de quitar espacios."""
+    return bool(str(texto or "").strip())
+
+def pedir_texto(mensaje, validacion_extra=None):
+    """Pide texto con validación de no vacío y opcionalmente una validación extra."""
     while True:
         texto = input(mensaje).strip()
-        if texto:
-            return texto
-        print("❌ Este campo no puede estar vacío.")
+        if not validar_texto_no_vacio(texto):
+            print("❌ Este campo no puede estar vacío.")
+            continue
+        if validacion_extra and not validacion_extra(texto):
+            continue
+        return texto
 
 
 def pedir_fecha(mensaje):
@@ -103,33 +100,29 @@ def pedir_hora(mensaje):
 
 
 def pedir_capacidad(mensaje):
+    """Pide y valida una capacidad como entero positivo."""
     while True:
         capacidad = input(mensaje).strip()
-        if capacidad.isdigit() and int(capacidad) > 0:
-            return capacidad
-        print("❌ Capacidad inválida. Solo números mayores a 0.")
+        try:
+            capacidad_int = int(capacidad)
+            if capacidad_int > 0:
+                return capacidad_int  # Retorna int, no string
+            print("❌ La capacidad debe ser mayor que 0.")
+        except ValueError:
+            print("❌ Capacidad inválida. Ingrese un número entero positivo.")
 
-# VALIDACIONES OBJETO EVENTO
-
-def validar_evento(evento):
-    try:
-        datetime.strptime(evento["fecha"], "%Y-%m-%d")
-        datetime.strptime(evento["hora"], "%H:%M")
-        if not int(evento["capacidad"]) > 0:
-            print("❌ Capacidad debe ser un número positivo.")
-            return False
-    except:
-        print("❌ Error de validación en los datos del evento.")
-        return False
-    
-    return True
-
+def validar_id_artista(artistas, id_artista):
+    """Valida que un ID de artista exista y esté activo."""
+    if not id_artista:  # Permitir omitir artista
+        return True
+    return id_artista in artistas
 
 def validar_existencia(eventos, nuevo):
-    for e in eventos:
-        if e["nombre"].lower() == nuevo["nombre"].lower() and e["fecha"] == nuevo["fecha"]:
-            return True
-    return False
+    """Valida que no exista un evento con el mismo nombre en la misma fecha."""
+    return any(
+        e["nombre"].lower() == nuevo["nombre"].lower() and e["fecha"] == nuevo["fecha"]
+        for e in eventos
+    )
 
 def pedir_nombre_n(valor_actual=None):
     while True:
