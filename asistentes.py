@@ -1,7 +1,8 @@
 import json
 import re
 import os
-from modules.utils import validar_correo
+from modules.utils import validar_correo, clear_screen, pause
+
 
 ARCHIVO_JSON = "data/asistentes.json"
 
@@ -19,11 +20,12 @@ def guardar_asistentes(data, nombre_a=ARCHIVO_JSON):
         json.dump(data, f, indent=4, ensure_ascii=False)
 
 def registrar_asistente():
+    clear_screen()
     asistentes = cargar_asistentes()
 
     print("===REGISTRO DE ASISTENTE===")
 
-    identificacion = input("ingrese su numero de identifeicacion: ").strip()
+    identificacion = input("ingrese su numero de identificacion: ").strip()
     nombre = input("Ingrese su nombre completo: ").strip()
     
     
@@ -58,6 +60,7 @@ def registrar_asistente():
     asistentes[identificacion] = nuevo_asistente
     guardar_asistentes(asistentes)
     print("Registro exitoso, su estado es: En espera.")
+    pause()
 
 """def mostrar_asistentes():
     asistentes = cargar_asistentes()

@@ -17,6 +17,7 @@ def validar_evento(evento):
     for campo, valor in evento.items():
         if campo != "id" and not str(valor).strip():
             print(f"⚠️ El campo '{campo}' no puede estar vacío.")
+            pause()
             return False
 
     # Validar formato de fecha
@@ -24,6 +25,7 @@ def validar_evento(evento):
         datetime.strptime(evento["fecha"], "%Y-%m-%d")
     except ValueError:
         print("⚠️ La fecha debe tener el formato YYYY-MM-DD.")
+        pause()
         return False
 
     # Validar formato de hora
@@ -31,15 +33,18 @@ def validar_evento(evento):
         datetime.strptime(evento["hora"], "%H:%M")
     except ValueError:
         print("⚠️ La hora debe tener el formato HH:MM (24h).")
+        pause()
         return False
 
     # Validar capacidad numérica
     try:
         if int(evento["capacidad"]) <= 0:
             print("⚠️ La capacidad debe ser un número positivo.")
+            pause()
             return False
     except ValueError:
         print("⚠️ La capacidad debe ser un número entero.")
+        pause()
         return False
 
     return True

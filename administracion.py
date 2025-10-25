@@ -1,8 +1,9 @@
 
 import json
 import os
-from modules.utils import validar_evento, validar_existencia
+from modules.utils import validar_evento, validar_existencia, clear_screen, pause
 from artistas import registrar_artista
+
 
 RUTA_JSON = os.path.join(os.path.dirname(__file__), "data/eventos.json")
 
@@ -33,6 +34,7 @@ def cargar_artistas():
 
 
 def crear_evento ():
+    clear_screen()
     print("====== CREAR EVENTO ======".center(50))
     nombre = input("Ingrese el nombre del evento: ").strip()
     fecha = input("Ingrese la fecha del evento (YYYY-MM-DD): ").strip()
@@ -55,6 +57,7 @@ def crear_evento ():
             artista_asignado = artistas[id_artista]["nombre"]
         else:
             print("⚠️ Artista no encontrado. Se asignará None.")
+            pause()
 
     nuevo_evento = {
         "id": len(cargar_eventos()) + 1,
@@ -74,36 +77,42 @@ def crear_evento ():
 
     if validar_existencia(eventos, nuevo_evento):
         print("⚠️ El evento ya existe.")
+        pause()
         return
     
     eventos.append(nuevo_evento)
     guardar_eventos(eventos)
     print("✅ Evento creado exitosamente.")
+    pause()
 
 def listar_eventos():
-
+    clear_screen()
     print("====== LISTAR EVENTOS ======".center(50))
     eventos= cargar_eventos()
 
     if not eventos:
         print("No hay eventos registrados.")
+        pause() 
         return
     
     for e in eventos :
         print(f"{e['id']}. {e['nombre']} - {e['fecha']} {e['hora']} - {e['lugar']} - {e['artista']}")
 
 def modificar_evento():
+    clear_screen()
     listar_eventos()
     try:
         id_evento = int(input("\nIngrese el ID del evento a modificar: "))
     except ValueError:
         print("❌ ID inválido.")
+        pause()
         return
     
     eventos = cargar_eventos()  
     evento = next((e for e in eventos if e["id"] == id_evento), None)
     if not evento:
         print("❌ No se encontró el evento.")
+        pause()
         return
 
     print("Deje vacío si no desea cambiar un campo.")
@@ -146,13 +155,16 @@ def modificar_evento():
 
     guardar_eventos(eventos)
     print("✅ Evento actualizado correctamente.")
+    pause()
 
 def eliminar_evento():
+    clear_screen()
     listar_eventos()
     try:
         id_evento = int(input("\nIngrese el ID del evento a eliminar: "))
     except ValueError:
         print("❌ ID inválido.")
+        pause()
         return
 
     eventos = cargar_eventos()
@@ -160,16 +172,20 @@ def eliminar_evento():
 
     if len(nuevos) == len(eventos):
         print("❌ No se encontró el evento.")
+        pause()
         return
 
     guardar_eventos(nuevos)
     print("🗑️ Evento eliminado correctamente.")
+    pause()
 
 def generar_reporte():
+    clear_screen()
     eventos =cargar_eventos()
 
     if not eventos :
         print ("no hay eventos para generar reportes.")
+        pause()
         return
     
     print ("\n"+ " REPORTE DE EVENTOS ".center(50,"="))
@@ -197,6 +213,7 @@ def generar_reporte():
 
     print (f"\n capacidad total disponible: {capacidad_total}")
     print ("\n Reporte echo correctamente")
+    pause()
 
     
 
