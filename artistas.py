@@ -60,28 +60,24 @@ def registrar_artista():
                 return
             continue
         break
-    
-    nombre = input("Nombre del artista: ").strip()
-    tipo_presentacion = input("Tipo de presentación: ").strip()
-    duracion = input("Duración de la actuación (en minutos): ").strip()
 
-   
-    errores = []
+    while True:
+        nombre = input("Nombre del artista: ").strip()
+        if validar_nombre(nombre):
+            break
+        print("❌ El nombre debe contener solo letras y espacios.")
 
-    if not validar_registro(nRegistro):
-        errores.append(" El Nro. de registro deben ser solo numeros.")
-    if nRegistro in artista:
-        errores.append("El numero de registro ya se encuentra registrado")
-    if not validar_nombre(nombre):
-        errores.append(" El nombre deben ser solo letras.")
-    if not validar_tipo(tipo_presentacion):
-        errores.append(" El tipo de presentación no puede estar vacío.")
-    if not validar_duracion(duracion):
-        errores.append(" La duración debe ser un número entero positivo.")
+    while True:
+        tipo_presentacion = input("Tipo de presentación: ").strip()
+        if validar_tipo(tipo_presentacion):
+            break
+        print("❌ El tipo de presentación no puede estar vacío.")
 
-    if errores:
-        print("\n".join(errores))
-        return
+    while True:
+        duracion = input("Duración de la actuación (en minutos): ").strip()
+        if validar_duracion(duracion):
+            break
+        print("❌ La duración debe ser un número entero positivo.")
 
    
     datos_artista = {
