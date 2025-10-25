@@ -4,8 +4,8 @@ import os
 from artistas import registrar_artista
 from modules.utils import (
     pedir_texto, pedir_fecha, pedir_hora, pedir_capacidad,
-    validar_evento, validar_existencia, pedir_categoria_n, pedir_nombre_n,
-    pedir_fecha_n, pedir_hora_n, pedir_capacidad_n,
+    validar_evento, validar_existencia, validar_disponibilidad_artista,
+    pedir_categoria_n, pedir_nombre_n, pedir_fecha_n, pedir_hora_n, pedir_capacidad_n,
     clear_screen, pause
 )
 
@@ -39,52 +39,72 @@ def cargar_artistas():
             return {}
 
 
-def crear_evento ():
+def crear_evento():
+    """Crear evento con validaciones por campo y opción de reintento si algo falla."""
     clear_screen()
     print("====== CREAR EVENTO ======".center(50))
 
-    nombre = pedir_texto("Ingrese el nombre del evento: ")
-    fecha = pedir_fecha("Ingrese la fecha (YYYY-MM-DD): ")
-    hora = pedir_hora("Ingrese la hora (HH:MM): ")
-    lugar = pedir_texto("Ingrese el lugar del evento: ")
-    categoria = pedir_texto("Ingrese la categoría: ")
-    capacidad = pedir_capacidad("Ingrese la capacidad: ")
+    while True:
+        nombre = pedir_texto("Ingrese el nombre del evento: ")
+        fecha = pedir_fecha("Ingrese la fecha (YYYY-MM-DD): ")
+        hora = pedir_hora("Ingrese la hora (HH:MM): ")
+        lugar = pedir_texto("Ingrese el lugar del evento: ")
+        categoria = pedir_texto("Ingrese la categoría: ")
+        capacidad = pedir_capacidad("Ingrese la capacidad: ")
 
-    artistas = cargar_artistas()
-    artista_asignado = None
+        artistas = cargar_artistas()
+        artista_asignado = None
+        id_artista = None
 
-    if artistas:
-        print("\nArtistas disponibles:")
-        for id_art, a in artistas.items():
-            print(f"{id_art}. {a['nombre']} - {a['tipo_presentacion']}")
+        if artistas:
+            print("\nArtistas disponibles:")
+            for id_art, a in artistas.items():
+                print(f"{id_art}. {a['nombre']} - {a['tipo_presentacion']}")
 
-        while True:
-            id_artista = input("Seleccione el ID del artista: ").strip()
-            if id_artista in artistas:
-                artista_asignado = artistas[id_artista]["nombre"]
-                break
-            print("❌ Artista no encontrado, intente de nuevo.")
+            while True:
+                id_sel = input("Seleccione el ID del artista (ENTER para omitir): ").strip()
+                if id_sel == "":
+                    id_artista = None
+                    artista_asignado = None
+                    break
+                if id_sel in artistas:
+                    id_artista = id_sel
+                    artista_asignado = artistas[id_artista]["nombre"]
+                    if not validar_disponibilidad_artista(artistas, id_artista, fecha, hora):
+                        print("❌ El artista no está disponible en la fecha/hora indicada. Elija otro artista o omita.")
+                        continue
+                    break
+                print("❌ Artista no encontrado, intente de nuevo.")
 
-    nuevo_evento = {
-        "id": len(cargar_eventos()) + 1,
-        "nombre": nombre,
-        "fecha": fecha,
-        "hora": hora,
-        "lugar": lugar,
-        "categoria": categoria,
-        "capacidad": capacidad,
-        "artista": artista_asignado
-    }
+        nuevo_evento = {
+            "id": len(cargar_eventos()) + 1,
+            "nombre": nombre,
+            "fecha": fecha,
+            "hora": hora,
+            "lugar": lugar,
+            "categoria": categoria,
+            "capacidad": capacidad,
+            "artista": artista_asignado
+        }
 
-    eventos = cargar_eventos()
-    if validar_existencia(eventos, nuevo_evento):
-        print("⚠️ El evento ya existe.")
+        eventos = cargar_eventos()
+        if validar_existencia(eventos, nuevo_evento):
+            print("⚠️ Ya existe un evento con el mismo nombre y fecha.")
+            if input("¿Desea intentar de nuevo? (s/N): ").strip().lower() == "s":
+                continue
+            return
+
+        if not validar_evento(nuevo_evento):
+            print("⚠️ Error en los datos del evento. Se reiniciará el formulario.")
+            if input("¿Desea reintentar? (s/N): ").strip().lower() == "s":
+                continue
+            return
+
+        eventos.append(nuevo_evento)
+        guardar_eventos(eventos)
+        print("✅ Evento creado exitosamente ✅")
+        pause()
         return
-
-    eventos.append(nuevo_evento)
-    guardar_eventos(eventos)
-    print("✅ Evento creado exitosamente ✅")
-    pause()
 
 def listar_eventos():
     clear_screen()
