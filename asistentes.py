@@ -1,7 +1,7 @@
 import json
 import re
 import os
-from modules.utils import validar_correo, clear_screen, pause
+from modules.utils import validar_correo, clear_screen, pause, pedir_identificacion
 
 
 ARCHIVO_JSON = "data/asistentes.json"
@@ -24,26 +24,46 @@ def registrar_asistente():
     asistentes = cargar_asistentes()
 
     print("===REGISTRO DE ASISTENTE===")
+    # Identificación: solo números y única
+    while True:
+        identificacion = pedir_identificacion("Ingrese su número de identificación: ")
+        if identificacion in asistentes:
+            print("❌ Ya existe un asistente con esa identificación.")
+            if input("¿Desea intentar con otra identificación? (s/N): ").strip().lower() != "s":
+                return
+            continue
+        break
 
-    identificacion = input("ingrese su numero de identificacion: ").strip()
-    nombre = input("Ingrese su nombre completo: ").strip()
-    
-    
+    # Nombre: solo letras y espacios
+    while True:
+        nombre = input("Ingrese su nombre completo: ").strip()
+        if not nombre:
+            print("❌ El nombre no puede estar vacío.")
+            continue
+        patron_nombre = re.compile(r'^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$')
+        if not patron_nombre.match(nombre):
+            print("❌ El nombre sólo puede contener letras y espacios. Intente de nuevo.")
+            continue
+        break
+
+    # Correo: ya existe loop; mantener
     while True:
         correo = input("Ingrese su correo electronico: ").strip()
         if validar_correo(correo):
             break
         print("ERROR: El correo electrónico no es válido. Por favor, inténtelo de nuevo.")
-    
-    tipo_boleto = input("Ingrese el tipo de boleto (general/VIP/Cortesia): ").strip().capitalize()
 
-    if not identificacion or not nombre or not tipo_boleto:
-        print("ERROR: Todos los campos son obligatorios.")
-        return
-
-    if identificacion in asistentes:
-        print("ERROR: Ya existe un asistente con esa identificacion.")
-        return
+    # Tipo de boleto: validar opción permitida
+    tipos_permitidos = {"General", "Vip", "Cortesia"}
+    while True:
+        tipo_boleto = input("Ingrese el tipo de boleto (General/Vip/Cortesia): ").strip().capitalize()
+        if not tipo_boleto:
+            print("❌ El tipo de boleto no puede estar vacío.")
+            continue
+        if tipo_boleto not in tipos_permitidos:
+            print(f"❌ Tipo de boleto inválido. Opciones: {', '.join(tipos_permitidos)}")
+            continue
+        break
 
     confirmar = input("Desea confirmar el registro? (s/n): ").lower()
     if confirmar != "s":

@@ -4,8 +4,8 @@ import os
 from artistas import registrar_artista
 from modules.utils import (
     pedir_texto, pedir_fecha, pedir_hora, pedir_capacidad,
-    validar_evento, validar_existencia, pedir_categoria_n, pedir_nombre_n,
-    pedir_fecha_n, pedir_hora_n, pedir_capacidad_n,
+    validar_evento, validar_existencia, validar_disponibilidad_artista,
+    pedir_categoria_n, pedir_nombre_n, pedir_fecha_n, pedir_hora_n, pedir_capacidad_n,
     clear_screen, pause
 )
 
@@ -39,52 +39,72 @@ def cargar_artistas():
             return {}
 
 
-def crear_evento ():
+def crear_evento():
+    """Crear evento con validaciones por campo y opción de reintento si algo falla."""
     clear_screen()
     print("====== CREAR EVENTO ======".center(50))
 
-    nombre = pedir_texto("Ingrese el nombre del evento: ")
-    fecha = pedir_fecha("Ingrese la fecha (YYYY-MM-DD): ")
-    hora = pedir_hora("Ingrese la hora (HH:MM): ")
-    lugar = pedir_texto("Ingrese el lugar del evento: ")
-    categoria = pedir_texto("Ingrese la categoría: ")
-    capacidad = pedir_capacidad("Ingrese la capacidad: ")
+    while True:
+        nombre = pedir_texto("Ingrese el nombre del evento: ")
+        fecha = pedir_fecha("Ingrese la fecha (YYYY-MM-DD): ")
+        hora = pedir_hora("Ingrese la hora (HH:MM): ")
+        lugar = pedir_texto("Ingrese el lugar del evento: ")
+        categoria = pedir_texto("Ingrese la categoría: ")
+        capacidad = pedir_capacidad("Ingrese la capacidad: ")
 
-    artistas = cargar_artistas()
-    artista_asignado = None
+        artistas = cargar_artistas()
+        artista_asignado = None
+        id_artista = None
 
-    if artistas:
-        print("\nArtistas disponibles:")
-        for id_art, a in artistas.items():
-            print(f"{id_art}. {a['nombre']} - {a['tipo_presentacion']}")
+        if artistas:
+            print("\nArtistas disponibles:")
+            for id_art, a in artistas.items():
+                print(f"{id_art}. {a['nombre']} - {a['tipo_presentacion']}")
 
-        while True:
-            id_artista = input("Seleccione el ID del artista: ").strip()
-            if id_artista in artistas:
-                artista_asignado = artistas[id_artista]["nombre"]
-                break
-            print("❌ Artista no encontrado, intente de nuevo.")
+            while True:
+                id_sel = input("Seleccione el ID del artista (ENTER para omitir): ").strip()
+                if id_sel == "":
+                    id_artista = None
+                    artista_asignado = None
+                    break
+                if id_sel in artistas:
+                    id_artista = id_sel
+                    artista_asignado = artistas[id_artista]["nombre"]
+                    if not validar_disponibilidad_artista(artistas, id_artista, fecha, hora):
+                        print("❌ El artista no está disponible en la fecha/hora indicada. Elija otro artista o omita.")
+                        continue
+                    break
+                print("❌ Artista no encontrado, intente de nuevo.")
 
-    nuevo_evento = {
-        "id": len(cargar_eventos()) + 1,
-        "nombre": nombre,
-        "fecha": fecha,
-        "hora": hora,
-        "lugar": lugar,
-        "categoria": categoria,
-        "capacidad": capacidad,
-        "artista": artista_asignado
-    }
+        nuevo_evento = {
+            "id": len(cargar_eventos()) + 1,
+            "nombre": nombre,
+            "fecha": fecha,
+            "hora": hora,
+            "lugar": lugar,
+            "categoria": categoria,
+            "capacidad": capacidad,
+            "artista": artista_asignado
+        }
 
-    eventos = cargar_eventos()
-    if validar_existencia(eventos, nuevo_evento):
-        print("⚠️ El evento ya existe.")
+        eventos = cargar_eventos()
+        if validar_existencia(eventos, nuevo_evento):
+            print("⚠️ Ya existe un evento con el mismo nombre y fecha.")
+            if input("¿Desea intentar de nuevo? (s/N): ").strip().lower() == "s":
+                continue
+            return
+
+        if not validar_evento(nuevo_evento):
+            print("⚠️ Error en los datos del evento. Se reiniciará el formulario.")
+            if input("¿Desea reintentar? (s/N): ").strip().lower() == "s":
+                continue
+            return
+
+        eventos.append(nuevo_evento)
+        guardar_eventos(eventos)
+        print("✅ Evento creado exitosamente ✅")
+        pause()
         return
-
-    eventos.append(nuevo_evento)
-    guardar_eventos(eventos)
-    print("✅ Evento creado exitosamente ✅")
-    pause()
 
 def listar_eventos():
     clear_screen()
@@ -100,42 +120,97 @@ def listar_eventos():
         print(f"{e['id']}. {e['nombre']} - {e['fecha']} {e['hora']} - {e['lugar']} - {e['artista']}")
 
 def modificar_evento():
+    """Modificar evento con validaciones inmediatas y opción de mantener valores anteriores."""
     clear_screen()
     listar_eventos()
 
-    try:
-        id_evento = int(input("\nIngrese el ID del evento a modificar: "))
-    except ValueError:
-        print("❌ ID inválido.")
-        return
-    
-    eventos = cargar_eventos()
-    evento = next((e for e in eventos if e["id"] == id_evento), None)
-    if not evento:
-        print("❌ No se encontró el evento.")
-        return
+    # Validar ID del evento en bucle
+    while True:
+        try:
+            id_evento = int(input("\nIngrese el ID del evento a modificar (0 para cancelar): "))
+            if id_evento == 0:
+                print("Operación cancelada.")
+                return
+            eventos = cargar_eventos()
+            evento_original = next((e for e in eventos if e["id"] == id_evento), None)
+            if evento_original:
+                break
+            print("❌ No se encontró el evento.")
+        except ValueError:
+            print("❌ ID inválido. Debe ser un número.")
 
-    print("\n✏️ Edición del evento (deje vacío para mantener el anterior):\n")
+    # Crear copia para trabajar y mantener original para comparaciones
+    evento = evento_original.copy()
+    print("\n✏️ Edición del evento (deje vacío para mantener el valor actual):\n")
 
-    evento["nombre"] = pedir_nombre_n(evento["nombre"])
-    evento["fecha"] = pedir_fecha_n(evento["fecha"])
-    evento["hora"] = pedir_hora_n(evento["hora"])
-    evento["lugar"] = input(f"Nuevo lugar ({evento['lugar']}): ").strip() or evento["lugar"]
-    evento["categoria"] = pedir_categoria_n(evento["categoria"])
-    evento["capacidad"] = pedir_capacidad_n(evento["capacidad"])
-
-    artistas = cargar_artistas()
-    if artistas:
-        print("\nArtistas disponibles:")
-        for id_art, a in artistas.items():
-            print(f"{id_art}. {a['nombre']} - {a['tipo_presentacion']}")
+    # Modificar campos con validación inmediata
+    while True:
+        # Campos básicos con sus validadores
+        evento["nombre"] = pedir_nombre_n(evento_original["nombre"])
+        evento["fecha"] = pedir_fecha_n(evento_original["fecha"])
+        evento["hora"] = pedir_hora_n(evento_original["hora"])
+        evento["categoria"] = pedir_categoria_n(evento_original["categoria"])
+        evento["capacidad"] = pedir_capacidad_n(evento_original["capacidad"])
         
-        nuevo_art = input(f"Nuevo artista (ID) [{evento['artista']}]: ").strip()
-        if nuevo_art in artistas:
-            evento["artista"] = artistas[nuevo_art]["nombre"]
+        # Lugar (validación simple de no-vacío si se proporciona)
+        nuevo_lugar = input(f"Nuevo lugar ({evento_original['lugar']}): ").strip()
+        evento["lugar"] = nuevo_lugar if nuevo_lugar else evento_original["lugar"]
 
-    guardar_eventos(eventos)
-    print("✅ Evento actualizado correctamente ✅")
+        # Artista (con validación de disponibilidad)
+        artistas = cargar_artistas()
+        if artistas:
+            print("\nArtistas disponibles:")
+            for id_art, a in artistas.items():
+                print(f"{id_art}. {a['nombre']} - {a['tipo_presentacion']}")
+            
+            while True:
+                nuevo_art = input(f"Nuevo artista (ID) [{evento_original['artista']}] (ENTER para mantener): ").strip()
+                if not nuevo_art:  # Mantener artista actual
+                    break
+                if nuevo_art in artistas:
+                    # Verificar disponibilidad solo si cambia artista o fecha/hora
+                    if (nuevo_art != evento_original.get("artista") or 
+                        evento["fecha"] != evento_original["fecha"] or 
+                        evento["hora"] != evento_original["hora"]):
+                        
+                        if not validar_disponibilidad_artista(artistas, nuevo_art, evento["fecha"], evento["hora"]):
+                            print("❌ El artista no está disponible en esa fecha/hora.")
+                            if input("¿Desea elegir otro artista? (s/N): ").strip().lower() != "s":
+                                break
+                            continue
+                    evento["artista"] = artistas[nuevo_art]["nombre"]
+                    break
+                print("❌ Artista no encontrado.")
+                if input("¿Desea elegir otro artista? (s/N): ").strip().lower() != "s":
+                    break
+
+        # Validación final
+        if not validar_evento(evento):
+            print("⚠️ Los datos modificados no son válidos.")
+            if input("¿Desea intentar de nuevo? (s/N): ").strip().lower() != "s":
+                return
+            continue
+
+        # Verificar duplicados solo si cambió nombre o fecha
+        if (evento["nombre"] != evento_original["nombre"] or 
+            evento["fecha"] != evento_original["fecha"]):
+            otros_eventos = [e for e in eventos if e["id"] != id_evento]
+            if validar_existencia(otros_eventos, evento):
+                print("⚠️ Ya existe otro evento con el mismo nombre y fecha.")
+                if input("¿Desea intentar con otros datos? (s/N): ").strip().lower() != "s":
+                    return
+                continue
+
+        # Todo válido: actualizar y guardar
+        for i, e in enumerate(eventos):
+            if e["id"] == id_evento:
+                eventos[i] = evento
+                break
+                
+        guardar_eventos(eventos)
+        print("✅ Evento actualizado correctamente ✅")
+        pause()
+        return
 
     
 def eliminar_evento():
