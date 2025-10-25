@@ -3,5 +3,10 @@
         "nombre": "Diplo",
         "tipo_presentacion": "Concierto",
         "duracion_minutos": 30
+    },
+    "222": {
+        "nombre": "corso",
+        "tipo_presentacion": "danza",
+        "duracion_minutos": 60
     }
 }
