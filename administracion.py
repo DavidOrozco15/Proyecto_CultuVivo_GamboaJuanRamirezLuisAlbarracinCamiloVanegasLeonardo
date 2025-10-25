@@ -14,6 +14,8 @@ def cargar_eventos():
         try:
             return json.load(f)
         except json.JSONDecodeError:
+            print("⚠️ Error al leer eventos.json. El archivo puede estar corrupto. Se cargará una lista vacía.")
+            pause()
             return []
 
 def guardar_eventos(eventos):
@@ -54,13 +56,24 @@ def crear_evento ():
 
         id_artista = input("Seleccione el ID del artista: ").strip()
         if id_artista in artistas:
-            artista_asignado = artistas[id_artista]["nombre"]
+            from modules.utils import validar_disponibilidad_artista
+            if validar_disponibilidad_artista(artistas, id_artista, fecha, hora):
+                artista_asignado = artistas[id_artista]["nombre"]
+            else:
+                print("⚠️ El artista ya tiene un evento en esa fecha y hora. Se asignará None.")
+                pause()
         else:
             print("⚠️ Artista no encontrado. Se asignará None.")
             pause()
 
+    # Generar ID único persistente
+    eventos_existentes = cargar_eventos()
+    if eventos_existentes:
+        max_id = max(e["id"] for e in eventos_existentes)
+    else:
+        max_id = 0
     nuevo_evento = {
-        "id": len(cargar_eventos()) + 1,
+        "id": max_id + 1,
         "nombre": nombre,
         "fecha": fecha,
         "hora": hora,
@@ -129,7 +142,13 @@ def modificar_evento():
             print(f"{id_art}. {a['nombre']} - {a['tipo_presentacion']}")
         nuevo_artista = input(f"Nuevo artista (ID) [{evento['artista']}]: ").strip()
         if nuevo_artista in artistas:
-            artista = artistas[nuevo_artista]["nombre"]
+            from modules.utils import validar_disponibilidad_artista
+            if validar_disponibilidad_artista(artistas, nuevo_artista, fecha, hora):
+                artista = artistas[nuevo_artista]["nombre"]
+            else:
+                print("⚠️ El artista ya tiene un evento en esa fecha y hora. Se mantendrá el artista actual.")
+                pause()
+                artista = evento['artista']
         else:
             artista = evento['artista']
     else:
@@ -160,12 +179,13 @@ def modificar_evento():
 def eliminar_evento():
     clear_screen()
     listar_eventos()
-    try:
-        id_evento = int(input("\nIngrese el ID del evento a eliminar: "))
-    except ValueError:
-        print("❌ ID inválido.")
-        pause()
-        return
+    while True:
+        try:
+            id_evento = int(input("\nIngrese el ID del evento a eliminar: "))
+            break
+        except ValueError:
+            print("❌ ID inválido. Intente nuevamente.")
+            pause()
 
     eventos = cargar_eventos()
     nuevos = [e for e in eventos if e["id"] != id_evento]
