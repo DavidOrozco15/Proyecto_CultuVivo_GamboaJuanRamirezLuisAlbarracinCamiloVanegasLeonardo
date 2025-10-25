@@ -8,5 +8,15 @@
         "categoria": "Concierto",
         "capacidad": "200",
         "artista": "Diplo"
+    },
+    {
+        "id": 2,
+        "nombre": "kaka",
+        "fecha": "2005-06-18",
+        "hora": "3:00",
+        "lugar": "su casa",
+        "categoria": "danza",
+        "capacidad": "300",
+        "artista": "corso"
     }
 ]

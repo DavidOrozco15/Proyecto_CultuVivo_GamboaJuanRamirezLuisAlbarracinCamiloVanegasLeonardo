@@ -28,7 +28,7 @@ def menu_admin():
         print("3. Eliminar evento")
         print("4. Ver eventos")
         print("5. Registrar artistas")
-        print("6 Generar reporte")
+        print("6. Generar reporte")
         print("7. Salir")
 
         opcion = input("Seleccione una opción: ")
@@ -43,7 +43,7 @@ def menu_admin():
             listar_eventos()
         elif opcion == "5":
             registrar_artista()
-        elif opcion == "4":
+        elif opcion == "6":
             generar_reporte()
         elif opcion == "7":
             print("👋 Saliendo del panel de administrador...")

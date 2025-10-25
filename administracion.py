@@ -174,29 +174,22 @@ def generar_reporte():
     
     print ("\n"+ " REPORTE DE EVENTOS ".center(50,"="))
 
-    total_eventos = len (eventos)
-    print(f" total de eventos registrados: {total_eventos}")
+    for e in eventos:
+        print("\n"+ "-"*60)
+        print(f"\n📌 Tipo/categoria : {e['categoria']}")
+        print(f"🏷️ Nombre del evento : {e['nombre']}")
+        print(f"👥 Capacidad : {e['capacidad']}")
+        print(f"🎙️ artista : {e['artista'] if e ['artista'] else 'sin artista registrado'}")
 
-    categorias= {}
-    for e in eventos :
-        cat = e ["categoria"]
-        categorias[cat] = categorias.get(cat,0)+1
+        print(f"\nℹ️ informacion del evento:")
+        
+        print (f"\n🏦 lugar: {e['lugar']}")
+        print(f"📆 fecha: {e['fecha']}")
+        print(f"⏰ hora: {e['hora']}")
 
-    print("\n eventos por categoria:")
-    for cat, cant in categorias.items():
-        print(f" - {cat}: {cant} evento(s)")
+    print ("\n✅Reporte generado con exito ")
 
-    eventos_con_artista = [ e for e in eventos if e ["artista"]]
-    print(f"\n eventos con artista asignado: {len(eventos_con_artista)}")
 
-    try:
-        capacidad_total = sum(int(e["capacidad"])for e in eventos)
-
-    except:
-        capacidad_total = "error en datos de capacidad"
-
-    print (f"\n capacidad total disponible: {capacidad_total}")
-    print ("\n Reporte echo correctamente")
 
     
 
