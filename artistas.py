@@ -1,7 +1,7 @@
 import json
 import re
 import os
-
+from modules.utils import clear_screen, pause
 
 archivoJson = "data/artistas.json"
 
@@ -48,6 +48,7 @@ def validar_duracion(duracion):
 
 
 def registrar_artista():
+    clear_screen()
     artista = lista_artista()
     
     print("ㅤㅤㅤㅤRegistro de Artistaㅤㅤㅤㅤ")
@@ -85,6 +86,7 @@ def registrar_artista():
     }
     guardar_artista(nRegistro, datos_artista)
     print("El artista se ha registrado exitosamente.")
+    pause()
 
 
 
