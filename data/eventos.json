@@ -8,5 +8,15 @@
         "categoria": "Concierto",
         "capacidad": "200",
         "artista": "Diplo"
+    },
+    {
+        "id": 2,
+        "nombre": "jijija",
+        "fecha": "2025-08-10",
+        "hora": "10:50",
+        "lugar": "sanjuan",
+        "categoria": "porno",
+        "capacidad": "60",
+        "artista": "Diplo"
     }
 ]
