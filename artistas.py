@@ -1,7 +1,7 @@
 import json
 import re
 import os
-from modules.utils import clear_screen, pause
+from modules.utils import clear_screen, pause, pedir_identificacion, validar_identificacion
 
 archivoJson = "data/artistas.json"
 
@@ -22,9 +22,8 @@ def guardar_artista(nRegistro, datos, nombre_a=archivoJson):
         json.dump(registros, f, indent=4, ensure_ascii=False)
 
 def validar_registro(nRegistro):
-    if not nRegistro.isdigit():
-        return False
-    return int(nRegistro)
+    """Valida que el registro sea numérico."""
+    return validar_identificacion(nRegistro)
 
 
 def validar_nombre(nombre):
@@ -53,8 +52,15 @@ def registrar_artista():
     
     print("ㅤㅤㅤㅤRegistro de Artistaㅤㅤㅤㅤ")
 
+    while True:
+        nRegistro = pedir_identificacion("Ingrese su número de registro: ")
+        if nRegistro in artista:
+            print("❌ El número de registro ya se encuentra registrado")
+            if input("¿Desea intentar con otro número? (s/N): ").strip().lower() != "s":
+                return
+            continue
+        break
     
-    nRegistro = input("Ingrese su numero de registro: ").strip()
     nombre = input("Nombre del artista: ").strip()
     tipo_presentacion = input("Tipo de presentación: ").strip()
     duracion = input("Duración de la actuación (en minutos): ").strip()

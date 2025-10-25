@@ -7,6 +7,18 @@ def clear_screen():
 def pause():
     input("Presione Enter para continuar...")
 
+def validar_identificacion(identificacion):
+    """Valida que la identificación contenga solo números."""
+    return bool(identificacion and identificacion.isdigit())
+
+def pedir_identificacion(mensaje):
+    """Pide y valida una identificación (solo números)."""
+    while True:
+        identificacion = input(mensaje).strip()
+        if validar_identificacion(identificacion):
+            return identificacion
+        print("❌ La identificación debe contener solo números.")
+
 def validar_correo(correo):
     patron = r'^[\w\.-]+@[\w\.-]+\.\w+$'
     return re.match(patron, correo) is not None

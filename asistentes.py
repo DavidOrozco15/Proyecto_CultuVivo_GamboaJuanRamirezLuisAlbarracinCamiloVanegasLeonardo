@@ -1,7 +1,7 @@
 import json
 import re
 import os
-from modules.utils import validar_correo, clear_screen, pause
+from modules.utils import validar_correo, clear_screen, pause, pedir_identificacion
 
 
 ARCHIVO_JSON = "data/asistentes.json"
@@ -25,7 +25,15 @@ def registrar_asistente():
 
     print("===REGISTRO DE ASISTENTE===")
 
-    identificacion = input("ingrese su numero de identificacion: ").strip()
+    while True:
+        identificacion = pedir_identificacion("Ingrese su número de identificación: ")
+        if identificacion in asistentes:
+            print("❌ Ya existe un asistente con esa identificación.")
+            if input("¿Desea intentar con otra identificación? (s/N): ").strip().lower() != "s":
+                return
+            continue
+        break
+    
     nombre = input("Ingrese su nombre completo: ").strip()
     
     
