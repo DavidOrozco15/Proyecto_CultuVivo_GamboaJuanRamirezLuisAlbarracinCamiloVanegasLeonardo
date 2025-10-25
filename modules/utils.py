@@ -73,4 +73,62 @@ def validar_disponibilidad_artista(artistas, id_artista, fecha, hora):
             return False
     return True
 
+# mejora pedida por el scrum master
+def pedir_texto(mensaje):
+    while True:
+        texto = input(mensaje).strip()
+        if texto:
+            return texto
+        print("❌ Este campo no puede estar vacío.")
 
+
+def pedir_fecha(mensaje):
+    while True:
+        fecha = input(mensaje).strip()
+        try:
+            datetime.strptime(fecha, "%Y-%m-%d")
+            return fecha
+        except ValueError:
+            print("❌ Fecha inválida. Ejemplo correcto: 2025-10-24")
+
+
+def pedir_hora(mensaje):
+    while True:
+        hora = input(mensaje).strip()
+        try:
+            datetime.strptime(hora, "%H:%M")
+            return hora
+        except ValueError:
+            print("❌ Hora inválida. Ejemplo correcto: 19:30")
+
+
+def pedir_capacidad(mensaje):
+    while True:
+        capacidad = input(mensaje).strip()
+        if capacidad.isdigit() and int(capacidad) > 0:
+            return capacidad
+        print("❌ Capacidad inválida. Solo números mayores a 0.")
+
+# VALIDACIONES OBJETO EVENTO
+
+def validar_evento(evento):
+    try:
+        datetime.strptime(evento["fecha"], "%Y-%m-%d")
+        datetime.strptime(evento["hora"], "%H:%M")
+        if not int(evento["capacidad"]) > 0:
+            print("❌ Capacidad debe ser un número positivo.")
+            return False
+    except:
+        print("❌ Error de validación en los datos del evento.")
+        return False
+    
+    return True
+
+
+def validar_existencia(eventos, nuevo):
+    for e in eventos:
+        if e["nombre"].lower() == nuevo["nombre"].lower() and e["fecha"] == nuevo["fecha"]:
+            return True
+    return False
+
+# huevo de pascua jejejeje
