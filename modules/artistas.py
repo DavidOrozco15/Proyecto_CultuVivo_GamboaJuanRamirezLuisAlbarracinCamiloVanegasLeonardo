@@ -49,8 +49,8 @@ def validar_duracion(duracion):
 def registrar_artista():
     clear_screen()
     artista = lista_artista()
-    
-    print("ㅤㅤㅤㅤRegistro de Artistaㅤㅤㅤㅤ")
+
+    print("🎤 ㅤㅤㅤㅤRegistro de Artistaㅤㅤㅤㅤ 🎤")
 
     while True:
         nRegistro = pedir_identificacion("Ingrese su número de registro: ")
@@ -89,12 +89,3 @@ def registrar_artista():
     guardar_artista(nRegistro, datos_artista)
     print("El artista se ha registrado exitosamente.")
     pause()
-
-
-
-
-
-
-
-if __name__ == "__main__":
-    registrar_artista()

@@ -1,5 +1,6 @@
 import re
 import os
+from datetime import datetime
 
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -22,8 +23,6 @@ def pedir_identificacion(mensaje):
 def validar_correo(correo):
     patron = r'^[\w\.-]+@[\w\.-]+\.\w+$'
     return re.match(patron, correo) is not None
-
-from datetime import datetime
 
 def validar_evento(evento):
     """Valida que todos los campos del evento sean válidos y consistentes."""
