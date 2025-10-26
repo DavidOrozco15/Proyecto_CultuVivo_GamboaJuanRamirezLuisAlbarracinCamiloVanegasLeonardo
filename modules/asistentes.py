@@ -23,7 +23,7 @@ def registrar_asistente():
     clear_screen()
     asistentes = cargar_asistentes()
 
-    print("===REGISTRO DE ASISTENTE===")
+    print("📝 ===REGISTRO DE ASISTENTE=== 📝")
     # Identificación: solo números y única
     while True:
         identificacion = pedir_identificacion("Ingrese su número de identificación: ")
