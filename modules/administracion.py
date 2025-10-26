@@ -1,7 +1,7 @@
 
 import json
 import os
-from artistas import registrar_artista
+from .artistas import registrar_artista
 from modules.utils import (
     pedir_texto, pedir_fecha, pedir_hora, pedir_capacidad,
     validar_evento, validar_existencia, validar_disponibilidad_artista,
@@ -42,7 +42,7 @@ def cargar_artistas():
 def crear_evento():
     """Crear evento con validaciones por campo y opción de reintento si algo falla."""
     clear_screen()
-    print("====== CREAR EVENTO ======".center(50))
+    print("🎉 ====== CREAR EVENTO ====== 🎉".center(50))
 
     while True:
         nombre = pedir_texto("Ingrese el nombre del evento: ")
@@ -108,7 +108,7 @@ def crear_evento():
 
 def listar_eventos():
     clear_screen()
-    print("====== LISTAR EVENTOS ======".center(50))
+    print("👀 ====== LISTAR EVENTOS ====== 👀".center(50))
     eventos= cargar_eventos()
 
     if not eventos:
