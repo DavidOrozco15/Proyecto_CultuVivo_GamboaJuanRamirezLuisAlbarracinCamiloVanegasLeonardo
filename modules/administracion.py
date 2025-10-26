@@ -1,7 +1,7 @@
 
 import json
 import os
-from artistas import registrar_artista
+from .artistas import registrar_artista
 from modules.utils import (
     pedir_texto, pedir_fecha, pedir_hora, pedir_capacidad,
     validar_evento, validar_existencia, validar_disponibilidad_artista,

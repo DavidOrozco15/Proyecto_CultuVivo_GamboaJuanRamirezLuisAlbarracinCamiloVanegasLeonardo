@@ -1,8 +1,8 @@
 import json
 import os
-from administracion import crear_evento, modificar_evento, eliminar_evento, listar_eventos, generar_reporte
-from artistas import registrar_artista
-from asistentes import cargar_asistentes, registrar_asistente
+from .administracion import crear_evento, modificar_evento, eliminar_evento, listar_eventos, generar_reporte
+from .artistas import registrar_artista
+from .asistentes import cargar_asistentes, registrar_asistente
 from modules.utils import clear_screen, pause 
 
 
