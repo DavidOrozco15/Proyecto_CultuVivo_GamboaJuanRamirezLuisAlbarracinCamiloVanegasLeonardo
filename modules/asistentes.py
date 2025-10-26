@@ -12,7 +12,7 @@ def cargar_asistentes(nombre_a=ARCHIVO_JSON):
     with open(nombre_a, "r", encoding="utf-8") as f:
         try:
             return json.load(f)
-        except json.JSONDecodeError:
+        except (json.JSONDecodeError, UnicodeDecodeError):
             return {}
 
 def guardar_asistentes(data, nombre_a=ARCHIVO_JSON):
@@ -82,17 +82,4 @@ def registrar_asistente():
     print("Registro exitoso, su estado es: En espera.")
     pause()
 
-"""def mostrar_asistentes():
-    asistentes = cargar_asistentes()
-    if not asistentes:
-        print("No hay asistentes registrados.")
-        return
 
-    print("===LISTA DE ASISTENTES===")
-    for idx, (identificacion, asistente) in enumerate(asistentes.items(), start=1):
-        print(f"\nAsistente #{idx}")
-        print(f"Identificación: {identificacion}")
-        print(f"Nombre: {asistente['nombre']}")
-        print(f"Correo: {asistente['correo']}")
-        print(f"Tipo de Boleto: {asistente['tipo_boleto']}")
-        print(f"Estado: {asistente['estado']}")"""

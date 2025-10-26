@@ -64,10 +64,11 @@ def login():
     while True:
         clear_screen()
         print("\n--- Login ---")
-        print("1. Login como Administrador")
-        print("2. Registrar como Asistente")
-        print("3. Login como Asistente")
-        print("4. Salir")
+        print("1. Iniciar sesión como Administrador")
+        print("2. Iniciar sesión como Asistente")
+        print("3. Registrar como Asistente")
+        print("4. Iniciar sesión como Artista")
+        print("5. Salir")
 
         opcion = input("Seleccione una opción: ")
 
@@ -79,11 +80,11 @@ def login():
                 print("Usuario incorrecto.")
                 pause()
         elif opcion == "2":
-            registrar_asistente()
-            print("Registro completado. Ahora puede iniciar sesión como asistente.")
-            pause()
-        elif opcion == "3":
             asistentes = cargar_asistentes()
+            if not asistentes:
+                print("No hay asistentes registrados. Regístrese primero.")
+                pause()
+                continue
             id_asistente = input("Ingrese su ID de identificación: ").strip()
             if id_asistente in asistentes:
                 print(f"Bienvenido, {asistentes[id_asistente]['nombre']}.")
@@ -91,7 +92,14 @@ def login():
             else:
                 print("ID no encontrado. Regístrese primero.")
                 pause()
+        elif opcion == "3":
+            registrar_asistente()
+            print("Registro completado. Ahora puede iniciar sesión como asistente.")
+            pause()
         elif opcion == "4":
+            print("Función aún no disponible...")
+            pause()
+        elif opcion == "5":
             print("Saliendo...")
             break
         else:

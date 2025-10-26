@@ -89,12 +89,3 @@ def registrar_artista():
     guardar_artista(nRegistro, datos_artista)
     print("El artista se ha registrado exitosamente.")
     pause()
-
-
-
-
-
-
-
-if __name__ == "__main__":
-    registrar_artista()
