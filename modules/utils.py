@@ -62,16 +62,7 @@ def validar_existencia(eventos, nuevo_evento):
             return True
     return False
 
-def validar_disponibilidad_artista(artistas, id_artista, fecha, hora):
-    if not id_artista or id_artista not in artistas:
-        return True  # Si no hay artista asignado o no existe, se considera disponible
-    # Verificar si el artista ya tiene un evento en la misma fecha y hora
-    from administracion import cargar_eventos
-    eventos = cargar_eventos()
-    for e in eventos:
-        if e.get("artista") == artistas[id_artista]["nombre"] and e["fecha"] == fecha and e["hora"] == hora:
-            return False
-    return True
+
 
 # Funciones de validación y entrada mejoradas
 def validar_texto_no_vacio(texto):

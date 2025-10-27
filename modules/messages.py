@@ -88,6 +88,7 @@ def login():
             id_asistente = input("🆔 Ingrese su ID de identificación: ").strip()
             if id_asistente in asistentes:
                 print(f"✅ Bienvenido, {asistentes[id_asistente]['nombre']}.")
+                pause()
                 menu_asistente()
             else:
                 print("❌ ID no encontrado. Regístrese primero.")
@@ -96,8 +97,10 @@ def login():
             resultado = registrar_asistente()
             if resultado:
                 print("✅ Registro completado. Ahora puede iniciar sesión como asistente.")
+                pause()
             else:
                 print("ℹ️ Registro no completado.")
+                pause()
             pause()
         elif opcion == "4":
             print("⚠️ Función aún no disponible...")

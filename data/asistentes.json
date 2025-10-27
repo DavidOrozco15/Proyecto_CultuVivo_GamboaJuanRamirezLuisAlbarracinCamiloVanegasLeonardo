@@ -4,5 +4,17 @@
         "correo": "camiloaa@gmail.com",
         "tipo_boleto": "Vip",
         "estado": "En espera"
+    },
+    "1005279984": {
+        "nombre": "Juan Gamboa Orozco",
+        "correo": "juanodavid94@gmail.com",
+        "tipo_boleto": "Vip",
+        "estado": "En espera"
+    },
+    "1005279985": {
+        "nombre": "Armando Casas",
+        "correo": "armandoando@gmail.com",
+        "tipo_boleto": "Cortesia",
+        "estado": "En espera"
     }
 }
