@@ -4,7 +4,10 @@ import os
 from modules.utils import validar_correo, clear_screen, pause, pedir_identificacion
 
 
-ARCHIVO_JSON = "data/asistentes.json"
+# Asegurarse de usar la ruta absoluta hacia la carpeta `data` en la raíz del proyecto.
+# Evita problemas cuando el working directory cambia (p. ej. al ejecutar desde `modules`).
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+ARCHIVO_JSON = os.path.join(BASE_DIR, "data", "asistentes.json")
 
 def cargar_asistentes(nombre_a=ARCHIVO_JSON):
     if not os.path.exists(nombre_a):
@@ -16,6 +19,11 @@ def cargar_asistentes(nombre_a=ARCHIVO_JSON):
             return {}
 
 def guardar_asistentes(data, nombre_a=ARCHIVO_JSON):
+    # Asegurar que la carpeta exista antes de escribir
+    dirpath = os.path.dirname(nombre_a)
+    if dirpath and not os.path.exists(dirpath):
+        os.makedirs(dirpath, exist_ok=True)
+
     with open(nombre_a, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=4, ensure_ascii=False)
 
@@ -30,7 +38,7 @@ def registrar_asistente():
         if identificacion in asistentes:
             print("❌ Ya existe un asistente con esa identificación.")
             if input("¿Desea intentar con otra identificación? (s/N): ").strip().lower() != "s":
-                return
+                return False
             continue
         break
 
@@ -68,7 +76,7 @@ def registrar_asistente():
     confirmar = input("Desea confirmar el registro? (s/n): ").lower()
     if confirmar != "s":
         print("El registro ha sido cancelado.")
-        return
+        return False
 
     nuevo_asistente = {
         "nombre": nombre,
@@ -80,6 +88,7 @@ def registrar_asistente():
     asistentes[identificacion] = nuevo_asistente
     guardar_asistentes(asistentes)
     print("Registro exitoso, su estado es: En espera.")
-    pause()
+    # No pausar aquí: el llamador decidirá cuándo pausar/mostrar mensajes.
+    return True
 
 

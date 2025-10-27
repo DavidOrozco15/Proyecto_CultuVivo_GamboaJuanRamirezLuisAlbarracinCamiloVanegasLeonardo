@@ -93,8 +93,11 @@ def login():
                 print("❌ ID no encontrado. Regístrese primero.")
                 pause()
         elif opcion == "3":
-            registrar_asistente()
-            print("✅ Registro completado. Ahora puede iniciar sesión como asistente.")
+            resultado = registrar_asistente()
+            if resultado:
+                print("✅ Registro completado. Ahora puede iniciar sesión como asistente.")
+            else:
+                print("ℹ️ Registro no completado.")
             pause()
         elif opcion == "4":
             print("⚠️ Función aún no disponible...")
