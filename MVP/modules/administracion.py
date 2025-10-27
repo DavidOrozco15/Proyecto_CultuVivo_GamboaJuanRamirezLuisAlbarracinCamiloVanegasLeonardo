@@ -1,8 +1,6 @@
 
-from ast import Break
 import json
 import os
-from .artistas import registrar_artista
 from modules.utils import (
     pedir_texto, pedir_fecha, pedir_hora, pedir_capacidad,
     validar_evento, validar_existencia,
@@ -70,7 +68,6 @@ def validar_disponibilidad_artista(artistas, id_artista, fecha, hora):
         if e.get("artista") == artistas[id_artista]["nombre"] and e["fecha"] == fecha and e["hora"] == hora:
             return False
     return True
-
 
 def crear_evento():
     """Crear evento con validaciones por campo y opción de reintento si algo falla."""
@@ -253,7 +250,6 @@ def modificar_evento():
         pause()
         return
 
-    
 def eliminar_evento():
     clear_screen()
     eventos = cargar_eventos()
@@ -318,7 +314,4 @@ def generar_reporte():
 
     pause()
 
-
-
-    
 

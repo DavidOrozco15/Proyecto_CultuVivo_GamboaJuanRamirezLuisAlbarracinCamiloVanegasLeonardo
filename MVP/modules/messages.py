@@ -5,7 +5,6 @@ from .artistas import registrar_artista
 from .asistentes import cargar_asistentes, registrar_asistente
 from modules.utils import clear_screen, pause 
 
-
 def menu_asistente():
     clear_screen()
     while True:
