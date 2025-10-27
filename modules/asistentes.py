@@ -38,7 +38,7 @@ def registrar_asistente():
         if identificacion in asistentes:
             print("❌ Ya existe un asistente con esa identificación.")
             if input("¿Desea intentar con otra identificación? (s/N): ").strip().lower() != "s":
-                return
+                return False
             continue
         break
 
@@ -76,7 +76,7 @@ def registrar_asistente():
     confirmar = input("Desea confirmar el registro? (s/n): ").lower()
     if confirmar != "s":
         print("El registro ha sido cancelado.")
-        return
+        return False
 
     nuevo_asistente = {
         "nombre": nombre,
@@ -88,6 +88,7 @@ def registrar_asistente():
     asistentes[identificacion] = nuevo_asistente
     guardar_asistentes(asistentes)
     print("Registro exitoso, su estado es: En espera.")
-    pause()
+    # No pausar aquí: el llamador decidirá cuándo pausar/mostrar mensajes.
+    return True
 
 
