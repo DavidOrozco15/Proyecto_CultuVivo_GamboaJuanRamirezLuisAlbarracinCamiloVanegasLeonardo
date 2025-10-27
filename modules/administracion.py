@@ -128,23 +128,29 @@ def crear_evento():
         pause()
         return
 
-def listar_eventos():
+def listar_eventos(pausar=True):
+    """Lista eventos. Si pausar=True hace una pausa al final (útil para menú),
+    si pausar=False devuelve inmediatamente (útil para flujos que solicitan ID luego).
+    """
     clear_screen()
     print("👀 ====== LISTAR EVENTOS ====== 👀".center(50))
-    eventos= cargar_eventos()
+    eventos = cargar_eventos()
 
     if not eventos:
         print("No hay eventos registrados.")
-        pause() 
+        pause()
         return
-    
-    for e in eventos :
-        print(f"{e['id']}. {e['nombre']} - {e['fecha']} {e['hora']} - {e['lugar']} - {e['artista']}")
+
+    for e in eventos:
+        print(f"{e['id']}. {e['nombre']} - {e['fecha']} {e['hora']} - {e['lugar']} - {e.get('artista')}")
+
+    if pausar:
+        pause()
 
 def modificar_evento():
     """Modificar evento con validaciones inmediatas y opción de mantener valores anteriores."""
     clear_screen()
-    listar_eventos()
+    listar_eventos(pausar=False)
 
     # Validar ID del evento en bucle
     while True:
@@ -237,7 +243,7 @@ def modificar_evento():
     
 def eliminar_evento():
     clear_screen()
-    listar_eventos()
+    listar_eventos(pausar=False)
     while True:
         try:
             id_evento = int(input("\nIngrese el ID del evento a eliminar: "))
