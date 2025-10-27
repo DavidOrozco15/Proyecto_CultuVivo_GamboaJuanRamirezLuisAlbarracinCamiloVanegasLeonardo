@@ -75,6 +75,7 @@ PROYECTO_CULTUVIVO_GAMBOA_VANEGAS_ALBARRACIN_RAMIREZ/
 Toda la planificación, backlog, requerimientos, historias de usuario y seguimiento del Sprint se encuentran en el documento adjunto:
 
 📄 **[Documento Scrum (PDF)](./Documento_Scrum.pdf)**
+📄 **[Documento Scrum En Linea](https://drive.google.com/file/d/1113RMR5aVPstB2JPNFJDNj5ot0YefQhf/view?usp=sharing)**
 
 Incluye:
 - Product Backlog y Sprint Backlog.  
