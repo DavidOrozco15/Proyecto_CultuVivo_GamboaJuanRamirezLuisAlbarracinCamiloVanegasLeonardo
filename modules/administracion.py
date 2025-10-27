@@ -9,16 +9,38 @@ from modules.utils import (
     clear_screen, pause
 )
 
-RUTA_JSON = os.path.join(os.path.dirname(__file__), "data/eventos.json")
+# Usar la ruta absoluta hacia la carpeta `data` en la raíz del proyecto.
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+RUTA_JSON = os.path.join(BASE_DIR, "data", "eventos.json")
 
 def cargar_eventos():
-    if not os.path.exists(RUTA_JSON):
+    # Intentar ruta prevista (raíz/data/eventos.json). Si no existe, intentar ruta relativa al módulo
+    posibles = [RUTA_JSON, os.path.join(os.path.dirname(__file__), "data", "eventos.json")]
+    ruta_usable = None
+    for p in posibles:
+        if os.path.exists(p):
+            ruta_usable = p
+            break
+
+    if not ruta_usable:
+        # No existe ningún archivo de eventos en las rutas esperadas
+        # Devolver lista vacía para mantener compatibilidad con el flujo
         return []
-    with open(RUTA_JSON, "r", encoding="utf-8") as f:
+
+    with open(ruta_usable, "r", encoding="utf-8") as f:
         try:
-            return json.load(f)
+            data = json.load(f)
+            # Aceptar tanto lista como dict: si es dict con claves numéricas, convertir a lista
+            if isinstance(data, dict):
+                # Si el dict es un mapping de id->evento, convertir a lista ordenada por id
+                try:
+                    eventos_list = list(data.values())
+                    return eventos_list
+                except Exception:
+                    return []
+            return data
         except json.JSONDecodeError:
-            print("⚠️ Error al leer eventos.json. El archivo puede estar corrupto. Se cargará una lista vacía.")
+            print(f"⚠️ Error al leer {ruta_usable}. El archivo puede estar corrupto. Se cargará una lista vacía.")
             pause()
             return []
 
@@ -27,7 +49,7 @@ def guardar_eventos(eventos):
         json.dump(eventos, f, indent=4, ensure_ascii=False)
 
 def cargar_artistas():
-    ruta_artistas = os.path.join(os.path.dirname(__file__), "data/artistas.json")
+    ruta_artistas = os.path.join(BASE_DIR, "data", "artistas.json")
     if not os.path.exists(ruta_artistas):
         print("⚠️ No existe artistas.json. No se podrán asignar artistas.")
         return {}
@@ -237,30 +259,52 @@ def eliminar_evento():
     pause()
 
 def generar_reporte():
+    """Genera un reporte por consola y además lo exporta a
+    data/reporte_eventos.txt en la raíz del proyecto.
+    """
     clear_screen()
-    eventos =cargar_eventos()
+    eventos = cargar_eventos()
 
-    if not eventos :
-        print ("no hay eventos para generar reportes.")
+    # Aceptar dict->lista por compatibilidad
+    if isinstance(eventos, dict):
+        eventos = list(eventos.values())
+
+    if not eventos:
+        print("no hay eventos para generar reportes.")
+        print(f"Ruta intentada: {RUTA_JSON}")
         pause()
         return
-    
-    print ("\n"+ " REPORTE DE EVENTOS ".center(50,"="))
+
+    encabezado = " REPORTE DE EVENTOS ".center(50, "=")
+    salida_lines = ["\n" + encabezado]
 
     for e in eventos:
-        print("\n"+ "-"*60)
-        print(f"\n📌 Tipo/categoria : {e['categoria']}")
-        print(f"🏷️ Nombre del evento : {e['nombre']}")
-        print(f"👥 Capacidad : {e['capacidad']}")
-        print(f"🎙️ artista : {e['artista'] if e ['artista'] else 'sin artista registrado'}")
+        salida_lines.append("\n" + "-" * 60)
+        salida_lines.append(f"\n📌 Tipo/categoria : {e.get('categoria', 'N/A')}")
+        salida_lines.append(f"🏷️ Nombre del evento : {e.get('nombre', 'N/A')}")
+        salida_lines.append(f"👥 Capacidad : {e.get('capacidad', 'N/A')}")
+        artista_val = e.get('artista') if e.get('artista') else 'sin artista registrado'
+        salida_lines.append(f"🎙️ artista : {artista_val}")
+        salida_lines.append("\nℹ️ informacion del evento:")
+        salida_lines.append(f"\n🏦 lugar: {e.get('lugar', 'N/A')}")
+        salida_lines.append(f"📆 fecha: {e.get('fecha', 'N/A')}")
+        salida_lines.append(f"⏰ hora: {e.get('hora', 'N/A')}")
 
-        print(f"\nℹ️ informacion del evento:")
-        
-        print (f"\n🏦 lugar: {e['lugar']}")
-        print(f"📆 fecha: {e['fecha']}")
-        print(f"⏰ hora: {e['hora']}")
+    salida_lines.append("\n✅Reporte generado con exito ")
 
-    print ("\n✅Reporte generado con exito ")
+    # Imprimir en consola
+    print('\n'.join(salida_lines))
+
+    # Escribir archivo de reporte en data/reporte_eventos.txt
+    ruta_reporte = os.path.join(BASE_DIR, "data", "reporte_eventos.txt")
+    try:
+        with open(ruta_reporte, "w", encoding="utf-8") as rf:
+            rf.write('\n'.join(salida_lines))
+        print(f"Reporte exportado a: {ruta_reporte}")
+    except Exception as exc:
+        print(f"No se pudo escribir el archivo de reporte: {exc}")
+
+    pause()
 
 
 
