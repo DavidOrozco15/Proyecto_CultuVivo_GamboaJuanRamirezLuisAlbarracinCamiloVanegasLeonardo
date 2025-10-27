@@ -5,7 +5,6 @@ from .artistas import registrar_artista
 from .asistentes import cargar_asistentes, registrar_asistente
 from modules.utils import clear_screen, pause 
 
-
 def menu_asistente():
     clear_screen()
     while True:
@@ -88,6 +87,7 @@ def login():
             id_asistente = input("🆔 Ingrese su ID de identificación: ").strip()
             if id_asistente in asistentes:
                 print(f"✅ Bienvenido, {asistentes[id_asistente]['nombre']}.")
+                pause()
                 menu_asistente()
             else:
                 print("❌ ID no encontrado. Regístrese primero.")
@@ -96,8 +96,10 @@ def login():
             resultado = registrar_asistente()
             if resultado:
                 print("✅ Registro completado. Ahora puede iniciar sesión como asistente.")
+                pause()
             else:
                 print("ℹ️ Registro no completado.")
+                pause()
             pause()
         elif opcion == "4":
             print("⚠️ Función aún no disponible...")

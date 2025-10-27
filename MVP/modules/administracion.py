@@ -1,10 +1,9 @@
 
 import json
 import os
-from .artistas import registrar_artista
 from modules.utils import (
     pedir_texto, pedir_fecha, pedir_hora, pedir_capacidad,
-    validar_evento, validar_existencia, validar_disponibilidad_artista,
+    validar_evento, validar_existencia,
     pedir_categoria_n, pedir_nombre_n, pedir_fecha_n, pedir_hora_n, pedir_capacidad_n,
     clear_screen, pause
 )
@@ -51,7 +50,7 @@ def guardar_eventos(eventos):
 def cargar_artistas():
     ruta_artistas = os.path.join(BASE_DIR, "data", "artistas.json")
     if not os.path.exists(ruta_artistas):
-        print("⚠️ No existe artistas.json. No se podrán asignar artistas.")
+        print("⚠️ No existen artistas. No se podrán asignar artistas.")
         return {}
     with open(ruta_artistas, "r", encoding="utf-8") as f:
         try:
@@ -60,6 +59,15 @@ def cargar_artistas():
             print("⚠️ Error al leer artistas.json")
             return {}
 
+def validar_disponibilidad_artista(artistas, id_artista, fecha, hora):
+    if not id_artista or id_artista not in artistas:
+        return True  # Si no hay artista asignado o no existe, se considera disponible
+    # Verificar si el artista ya tiene un evento en la misma fecha y hora
+    eventos = cargar_eventos()
+    for e in eventos:
+        if e.get("artista") == artistas[id_artista]["nombre"] and e["fecha"] == fecha and e["hora"] == hora:
+            return False
+    return True
 
 def crear_evento():
     """Crear evento con validaciones por campo y opción de reintento si algo falla."""
@@ -129,9 +137,6 @@ def crear_evento():
         return
 
 def listar_eventos(pausar=True):
-    """Lista eventos. Si pausar=True hace una pausa al final (útil para menú),
-    si pausar=False devuelve inmediatamente (útil para flujos que solicitan ID luego).
-    """
     clear_screen()
     print("👀 ====== LISTAR EVENTOS ====== 👀".center(50))
     eventos = cargar_eventos()
@@ -150,6 +155,11 @@ def listar_eventos(pausar=True):
 def modificar_evento():
     """Modificar evento con validaciones inmediatas y opción de mantener valores anteriores."""
     clear_screen()
+    eventos = cargar_eventos()
+    if not eventos:
+        print("No hay eventos registrados para modificar.")
+        pause()
+        return
     listar_eventos(pausar=False)
 
     # Validar ID del evento en bucle
@@ -240,9 +250,13 @@ def modificar_evento():
         pause()
         return
 
-    
 def eliminar_evento():
     clear_screen()
+    eventos = cargar_eventos()
+    if not eventos:
+        print("No hay eventos registrados para eliminar.")
+        pause()
+        return
     listar_eventos(pausar=False)
     while True:
         try:
@@ -265,9 +279,7 @@ def eliminar_evento():
     pause()
 
 def generar_reporte():
-    """Genera un reporte por consola y además lo exporta a
-    data/reporte_eventos.txt en la raíz del proyecto.
-    """
+    """Genera un reporte por consola trayendo los datos desde eventos.json."""
     clear_screen()
     eventos = cargar_eventos()
 
@@ -277,7 +289,6 @@ def generar_reporte():
 
     if not eventos:
         print("no hay eventos para generar reportes.")
-        print(f"Ruta intentada: {RUTA_JSON}")
         pause()
         return
 
@@ -301,18 +312,6 @@ def generar_reporte():
     # Imprimir en consola
     print('\n'.join(salida_lines))
 
-    # Escribir archivo de reporte en data/reporte_eventos.txt
-    ruta_reporte = os.path.join(BASE_DIR, "data", "reporte_eventos.txt")
-    try:
-        with open(ruta_reporte, "w", encoding="utf-8") as rf:
-            rf.write('\n'.join(salida_lines))
-        print(f"Reporte exportado a: {ruta_reporte}")
-    except Exception as exc:
-        print(f"No se pudo escribir el archivo de reporte: {exc}")
-
     pause()
 
-
-
-    
 

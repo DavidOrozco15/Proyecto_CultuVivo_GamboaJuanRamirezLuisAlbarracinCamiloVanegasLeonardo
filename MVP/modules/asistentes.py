@@ -1,7 +1,7 @@
 import json
 import re
 import os
-from modules.utils import validar_correo, clear_screen, pause, pedir_identificacion
+from modules.utils import validar_correo, clear_screen, pedir_identificacion
 
 
 # Asegurarse de usar la ruta absoluta hacia la carpeta `data` en la raíz del proyecto.

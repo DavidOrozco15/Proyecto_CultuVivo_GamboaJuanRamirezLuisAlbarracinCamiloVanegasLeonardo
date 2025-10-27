@@ -3,7 +3,9 @@ import re
 import os
 from modules.utils import clear_screen, pause, pedir_identificacion, validar_identificacion
 
-archivoJson = "data/artistas.json"
+# Usar la ruta absoluta hacia la carpeta `data` en la raíz del proyecto.
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+archivoJson = os.path.join(BASE_DIR, "data", "artistas.json")
 
 def lista_artista(nombre_a=archivoJson):
     if not os.path.exists(nombre_a):
@@ -13,7 +15,6 @@ def lista_artista(nombre_a=archivoJson):
             return json.load(f)
         except json.JSONDecodeError:
             return {}
-
 
 def guardar_artista(nRegistro, datos, nombre_a=archivoJson):
     registros = lista_artista()
@@ -25,7 +26,6 @@ def validar_registro(nRegistro):
     """Valida que el registro sea numérico."""
     return validar_identificacion(nRegistro)
 
-
 def validar_nombre(nombre):
     if not isinstance(nombre, str):
         return False
@@ -35,16 +35,13 @@ def validar_nombre(nombre):
     patron = re.compile(r'^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$')
     return bool(patron.match(n))
 
-
 def validar_tipo(tipo):
     return bool(tipo.strip())
-
 
 def validar_duracion(duracion):
     if not duracion.isdigit():
         return False
     return int(duracion) > 0
-
 
 def registrar_artista():
     clear_screen()
