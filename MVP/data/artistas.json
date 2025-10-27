@@ -1,0 +1,17 @@
+{
+    "111": {
+        "nombre": "Diplo",
+        "tipo_presentacion": "Concierto",
+        "duracion_minutos": 30
+    },
+    "222": {
+        "nombre": "Diomedes Diaz",
+        "tipo_presentacion": "Parranda",
+        "duracion_minutos": 300
+    },
+    "333": {
+        "nombre": "Carlos Vives",
+        "tipo_presentacion": "Concierto",
+        "duracion_minutos": 200
+    }
+}

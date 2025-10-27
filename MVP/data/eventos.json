@@ -1,0 +1,22 @@
+[
+    {
+        "id": 1,
+        "nombre": "Tomorrowland",
+        "fecha": "2026-01-21",
+        "hora": "20:00",
+        "lugar": "Bucaramanga",
+        "categoria": "Concierto",
+        "capacidad": 400000,
+        "artista": "Diomedes Diaz"
+    },
+    {
+        "id": 2,
+        "nombre": "Ultra",
+        "fecha": "2025-12-20",
+        "hora": "19:30",
+        "lugar": "Medellin",
+        "categoria": "Canto",
+        "capacidad": 300,
+        "artista": "Diomedes Diaz"
+    }
+]
